@@ -21,6 +21,7 @@ public class Main {
 	
 		//new Main().bruteForce(publicKey);
 		new Main().jaggedCrack(publicKey);
+		System.out.println("done");
 		//new Main().bigBruteForce(bigPublicKey);
 	}
 	

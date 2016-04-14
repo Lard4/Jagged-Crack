@@ -4,7 +4,7 @@ import java.util.*;
 public class JaggedCrack {
 
 	private long publicKey;
-	private ArrayList<Long> keyValues = new ArrayList<>();
+	private HashMap<Long, Double> keyValues = new HashMap<>();
 	
 	public JaggedCrack(long publicKey) {
 		this.publicKey = publicKey;
@@ -13,15 +13,14 @@ public class JaggedCrack {
 	/* WILL NOT FIND 1 OR SELF */
 	public void crack() {
 		double initialJag = (publicKey / (publicKey - 1.0));
-		int factorCounter = 1;
+		long factorCounter = 1;
 		
 		while (factorCounter < publicKey) {
-			approachWholeNumber(factorCounter, initialJag, Double.parseDouble(factorCounter + ".0"));
-			factorCounter++;
+			factorCounter = approachWholeNumber(factorCounter, initialJag, Double.parseDouble(factorCounter + ".0"));
 		}
 	}
 	
-	public void approachWholeNumber(int factorCounter, double initialJag, double i) {
+	public long approachWholeNumber(long factorCounter, double initialJag, double i) {
 		double nextJag = (publicKey / (publicKey - i));
 		
 		int frontDigits = 1;
@@ -34,10 +33,22 @@ public class JaggedCrack {
 		}
 		
 		byte[] jagArray = toByteArray(nextJag);
-		if ((jagArray[0] > 8) || (jagArray[0] < 2)) {
-			System.out.println(i + "\t" + nextJag);
-			
+		
+		if (jagArray[0] == 0) {
+			if (factorCounter % publicKey == 0) {
+				System.out.println("GOTEEM! it's " + factorCounter);
+				return publicKey;
+			}
 		}
+		
+		if ((jagArray[0] > 8) || (jagArray[0] < 2)) {
+			System.out.println(factorCounter + "\t" + nextJag);
+			keyValues.put(factorCounter, nextJag);
+		} else {
+			//factorCounter++;
+		}
+		
+		return factorCounter + 1;
 	}
 	
 	public double makeDecimal(double num, int digitsToLopOff) {
